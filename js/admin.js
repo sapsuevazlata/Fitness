@@ -13,7 +13,7 @@ class AdminManager {
     }
 
     init() {
-        console.log('🔧 Инициализация админ-панели...');
+        console.log('Инициализация админ-панели...');
         this.bindEvents();
         this.loadTrainers();
         this.loadStats();
@@ -21,7 +21,7 @@ class AdminManager {
     }
 
     bindEvents() {
-        console.log('🔧 Привязка событий админ-панели...');
+        console.log('Привязка событий админ-панели...');
         
         const trainerForm = document.getElementById('trainer-form');
         if (trainerForm) {
