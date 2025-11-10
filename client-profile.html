@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет клиента - Pulse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Pulse</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="dashboard">Главная</a>
+                    <a href="#" class="nav-link" data-section="group-classes">Групповые занятия</a>
+                    <a href="#" class="nav-link" data-section="trainers">Тренеры</a>
+                    <a href="#" class="nav-link" data-section="subscriptions">Абонементы</a>
+                    <a href="#" class="nav-link" data-section="my-bookings">Мои записи</a>
+                </nav>
+                <div class="auth-buttons">
+                    <div class="user-menu">
+                        <span id="userName">Клиент</span>
+                        <button class="btn btn-outline" onclick="Auth.logout()">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <section id="dashboard-section" class="section active">
+                    <div class="hero">
+                        <h1>Добро пожаловать, <span id="welcomeUserName">Клиент</span>!</h1>
+                        <p>Ваш личный кабинет для управления тренировками</p>
+                    </div>
+
+                    <div class="features-grid">
+                        <div class="card feature-card" onclick="showSection('group-classes')">
+                            <h3>🏋️ Групповые занятия</h3>
+                            <p>Просмотр и запись на групповые тренировки</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('trainers')">
+                            <h3>👨‍💼 Каталог тренеров</h3>
+                            <p>Выбор тренера для персональных занятий</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('subscriptions')">
+                            <h3>💳 Абонементы</h3>
+                            <p>Покупка абонементов на тренировки</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('my-bookings')">
+                            <h3>📋 Мои записи</h3>
+                            <p>Просмотр моих текущих и прошедших записей</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Ближайшие тренировки</h2>
+                        <div id="upcomingTrainings">
+                            <p>У вас нет запланированных тренировок</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Мои абонементы</h2>
+                        <div id="mySubscriptions">
+                            <p>У вас нет активных абонементов</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="group-classes-section" class="section">
+                    <h2>Групповые занятия</h2>
+                    <div class="filters">
+                        <select id="type-filter">
+                            <option value="">Все типы</option>
+                            <option value="yoga">Йога</option>
+                            <option value="pilates">Пилатес</option>
+                            <option value="cardio">Кардио</option>
+                        </select>
+                    </div>
+                    <div id="client-group-classes-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="trainers-section" class="section">
+                    <h2>Каталог тренеров</h2>
+                    <div class="filters">
+                        <select id="experience-filter">
+                            <option value="">Любой опыт</option>
+                            <option value="1-3">1-3 года</option>
+                            <option value="3-5">3-5 лет</option>
+                            <option value="5+">Более 5 лет</option>
+                        </select>
+                    </div>
+                    <div id="client-trainers-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="subscriptions-section" class="section">
+                    <h2>Абонементы</h2>
+                    <div class="subscriptions-grid">
+                        <div class="card subscription-card">
+                            <h3>Групповые тренировки</h3>
+                            <p>8 занятий в месяц</p>
+                            <div class="price">3,500 ₽</div>
+                            <button class="btn btn-primary">Купить</button>
+                        </div>
+                        <div class="card subscription-card">
+                            <h3>Посещение зала</h3>
+                            <p>12 посещений (45 дней)</p>
+                            <div class="price">4,200 ₽</div>
+                            <button class="btn btn-primary">Купить</button>
+                        </div>
+                        <div class="card subscription-card">
+                            <h3>Безлимитный</h3>
+                            <p>Все групповые занятия + зал</p>
+                            <div class="price">6,000 ₽</div>
+                            <button class="btn btn-primary">Купить</button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="my-bookings-section" class="section">
+                    <h2>Мои записи</h2>
+                    <div id="bookings-list">
+                        <div class="card">
+                            <p>У вас пока нет активных записей</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Pulse. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = Auth.getCurrentUser();
+            if (!user) {
+                alert('Для доступа к личному кабинету необходимо авторизоваться');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            if (user.role !== 'client') {
+                alert('Доступ запрещен! Эта страница только для клиентов');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && user) {
+                userNameElement.textContent = user.name;
+            }
+
+            initNavigation();
+        });
+
+        function initNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = e.target.getAttribute('data-section');
+                    showSection(section);
+                    
+                    document.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
+            });
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const activeSection = document.getElementById(`${sectionName}-section`);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+        function viewGroupClasses() {
+            showSection('group-classes');
+        }
+
+        function viewTrainers() {
+            showSection('trainers');
+        }
+
+        function buySubscription() {
+            showSection('subscriptions');
+        }
+
+        function viewMyBookings() {
+            showSection('my-bookings');
+        }
+        
+        setTimeout(() => showSection('dashboard'), 100);
+    </script>
+</body>
+</html>

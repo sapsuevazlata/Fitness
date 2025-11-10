@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pulse - фитнес-центр</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i> 
+                    <span>Pulse</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="home">Главная</a>
+                    <a href="#" class="nav-link" data-section="group-classes">Групповые занятия</a>
+                    <a href="#" class="nav-link" data-section="trainers">Тренеры</a>
+                    <a href="#" class="nav-link" data-section="schedule">Абонементы</a>
+                </nav>
+                <div class="auth-buttons">
+                    <button id="login-btn" class="btn btn-outline">Войти</button>
+                    <button id="register-btn" class="btn btn-primary">Регистрация</button>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <section id="home-section" class="section active">
+                    <div class="hero">
+                        <h1>Добро пожаловать в Pulse!</h1>
+                        <p>Ваш путь к идеальной форме начинается здесь</p>
+                    </div>
+                    <div class="features">
+                        <div class="feature-card">
+                            <i class="fas fa-users"></i>
+                            <h3>Групповые занятия</h3>
+                            <p>Йога, пилатес, функциональные тренировки и многое другое</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-user-tie"></i>
+                            <h3>Персональные тренеры</h3>
+                            <p>Опытные специалисты помогут достичь ваших целей</p>
+                        </div>
+                        <div class="feature-card">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h3>Удобное расписание</h3>
+                            <p>Планируйте свои тренировки в любое время</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="group-classes-section" class="section">
+                    <h2>Каталог групповых занятий</h2>
+                    <div class="filters">
+                        <select id="type-filter">
+                            <option value="">Все типы</option>
+                            <option value="yoga">Йога</option>
+                            <option value="pilates">Пилатес</option>
+                            <option value="cardio">Кардио</option>
+                        </select>
+                        <select id="sort-price">
+                            <option value="">Сортировка по цене</option>
+                            <option value="asc">По возрастанию</option>
+                            <option value="desc">По убыванию</option>
+                        </select>
+                    </div>
+                    <div id="group-classes-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="trainers-section" class="section">
+                    <h2>Наши тренеры</h2>
+                    <div class="filters">
+                        <select id="experience-filter">
+                            <option value="">Любой опыт</option>
+                            <option value="1-3">1-3 года</option>
+                            <option value="3-5">3-5 лет</option>
+                            <option value="5+">Более 5 лет</option>
+                        </select>
+                        <select id="specialization-filter">
+                            <option value="">Все специализации</option>
+                            <option value="yoga">Йога</option>
+                            <option value="fitness">Фитнес</option>
+                            <option value="cardio">Кардио</option>
+                            <option value="strength">Силовые тренировки</option>
+                            <option value="rehabilitation">Реабилитация</option>
+                        </select>
+                    </div>
+                    <div id="trainers-list" class="trainers-grid">
+                        <div class="loading">Загрузка тренеров...</div>
+                    </div>
+                </section>
+
+                <section id="schedule-section" class="section">
+                    <h2>Абонементы</h2>
+                    <div class="subscriptions-filters">
+                        <select id="subscription-type-filter">
+                            <option value="">Все типы</option>
+                            <option value="standard">Стандартный</option>
+                            <option value="premium">Премиум</option>
+                            <option value="unlimited">Безлимитный</option>
+                        </select>
+                        <select id="subscription-sort">
+                            <option value="price-asc">По цене (сначала дешевые)</option>
+                            <option value="price-desc">По цене (сначала дорогие)</option>
+                            <option value="duration">По продолжительности</option>
+                            <option value="visits">По количеству посещений</option>
+                        </select>
+                    </div>
+                    <div id="subscriptions-list" class="subscriptions-grid">
+                        <div class="loading">Загрузка абонементов...</div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Pulse. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="login-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Вход в аккаунт</h2>
+            <form id="loginForm">
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <button type="submit" class="btn btn-primary">Войти</button>
+            </form>
+            <p>Нет аккаунта? <a href="#" id="go-to-register">Зарегистрируйтесь</a></p>
+        </div>
+    </div>
+
+    <div id="register-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Регистрация</h2>
+            <form id="register-form">
+                <input type="text" name="name" placeholder="Имя" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="password" name="password" placeholder="Пароль" required>
+                <input type="password" name="confirmPassword" placeholder="Подтвердите пароль" required>
+                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+            </form>
+            <p>Уже есть аккаунт? <a href="#" id="go-to-login">Войдите</a></p>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/catalog.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

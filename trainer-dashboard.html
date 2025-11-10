@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кабинет тренера - Pulse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Pulse</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="dashboard">Главная</a>
+                    <a href="#" class="nav-link" data-section="clients">Мои клиенты</a>
+                    <a href="#" class="nav-link" data-section="schedule">Расписание</a>
+                    <a href="#" class="nav-link" data-section="group-classes">Занятия</a>
+                    <a href="#" class="nav-link" data-section="profile">Профиль</a>
+                    <a href="#" class="nav-link" data-section="statistics">Статистика</a>
+                </nav>
+                <div class="auth-buttons">
+                    <div class="user-menu">
+                        <span id="userName">Тренер</span>
+                        <button class="btn btn-outline" onclick="Auth.logout()">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <section id="dashboard-section" class="section active">
+                    <div class="hero">
+                        <h1>Кабинет тренера</h1>
+                        <p>Управление вашими клиентами и расписанием</p>
+                    </div>
+
+                    <div class="features-grid">
+                        <div class="card feature-card" onclick="showSection('clients')">
+                            <h3>👥 Мои клиенты</h3>
+                            <p>Просмотр списка ваших клиентов</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('schedule')">
+                            <h3>📅 Мое расписание</h3>
+                            <p>Управление вашим рабочим расписанием</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('profile')">
+                            <h3>👤 Мой профиль</h3>
+                            <p>Редактирование вашего профиля тренера</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('statistics')">
+                            <h3>📊 Статистика</h3>
+                            <p>Анализ вашей активности и доходов</p>
+                        </div>
+                        <div class="card feature-card" onclick="manageAvailability()">
+                            <h3>⏰ Доступность</h3>
+                            <p>Настройка времени для записи клиентов</p>
+                        </div>
+                        <div class="card feature-card" onclick="viewTrainingHistory()">
+                            <h3>📈 История тренировок</h3>
+                            <p>Просмотр проведенных тренировок</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Ближайшие занятия</h2>
+                        <div id="upcomingSessions">
+                            <p>У вас нет запланированных занятий на сегодня</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Новые запросы</h2>
+                        <div id="newRequests">
+                            <p>Новых запросов на тренировки нет</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="clients-section" class="section">
+                    <h2>Мои клиенты</h2>
+                    <div id="trainer-clients-list">
+                        <div class="card">
+                            <p>Список ваших клиентов</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="schedule-section" class="section">
+                    <h2>Мое рабочее расписание</h2>
+                    <p class="section-description">Ваше расписание настроено администратором. Для изменений обратитесь к администратору.</p>
+                    
+                    <div class="schedule-section">
+                        <div id="trainer-schedule">
+                            <div class="card">
+                                <p>Загрузка расписания...</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="schedule-section">
+                        <h3>👥 Мои групповые занятия</h3>
+                        <div id="trainer-group-sessions">
+                            <div class="card">
+                                <p>Загрузка групповых занятий...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="group-classes-section" class="section">
+                    <h2>Групповые занятия</h2>
+                    <div id="trainer-group-classes-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="profile-section" class="section">
+                    <h2>Мой профиль</h2>
+                    <div class="card">
+                        <p>Редактирование профиля тренера</p>
+                    </div>
+                </section>
+
+                <section id="statistics-section" class="section">
+                    <h2>Статистика</h2>
+                    <div class="card">
+                        <p>Аналитика вашей работы</p>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Pulse. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/trainer.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = Auth.getCurrentUser();
+            if (!user) {
+                alert('Для доступа к кабинету тренера необходимо авторизоваться');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            if (user.role !== 'trainer') {
+                alert('Доступ запрещен! У вас нет прав тренера');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && user) {
+                userNameElement.textContent = user.name;
+            }
+
+            initNavigation();
+
+            if (window.trainerManager) {
+                trainerManager.init();
+            }
+        });
+
+        function initNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = e.target.getAttribute('data-section');
+                    showSection(section);
+                    
+                    document.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+                    e.target.classList.add('active');
+                });
+            });
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const activeSection = document.getElementById(`${sectionName}-section`);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+        function manageAvailability() {
+            alert('Настройка доступности');
+        }
+
+        function viewTrainingHistory() {
+            alert('История тренировок');
+        }
+        
+        setTimeout(() => showSection('dashboard'), 100);
+    </script>
+</body>
+</html>

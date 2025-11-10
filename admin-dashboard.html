@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель администратора - Pulse</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <header class="header">
+            <div class="container">
+                <div class="logo">
+                    <i class="fas fa-dumbbell"></i>
+                    <span>Pulse</span>
+                </div>
+                <nav class="nav">
+                    <a href="#" class="nav-link active" data-section="dashboard">Главная</a>
+                    <a href="#" class="nav-link" data-section="trainers">Тренеры</a>
+                    <a href="#" class="nav-link" data-section="trainer-schedule">Расписание тренеров</a>
+                    <a href="#" class="nav-link" data-section="group-classes">Занятия</a>
+                    <a href="#" class="nav-link" data-section="subscriptions">Абонементы</a>
+                    <a href="#" class="nav-link" data-section="users">Пользователи</a>
+                    <a href="#" class="nav-link" data-section="reports">Отчеты</a>
+                    <a href="#" class="nav-link" data-section="settings">Настройки</a>
+                </nav>
+                <div class="auth-buttons">
+                    <div class="user-menu">
+                        <span id="userName">Администратор</span>
+                        <button class="btn btn-outline" onclick="Auth.logout()">Выйти</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="container">
+                <section id="dashboard-section" class="section active">
+                    <div class="hero">
+                        <h1>Панель администратора</h1>
+                        <p>Управление системой Pulse</p>
+                    </div>
+
+                    <div class="features-grid">
+                        <div class="card feature-card" onclick="showSection('trainers')">
+                            <h3>👨‍💼 Управление тренерами</h3>
+                            <p>Добавление, редактирование и удаление тренеров</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('reports')">
+                            <h3>📊 Просмотр отчетов</h3>
+                            <p>Финансовые и статистические отчеты</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('group-classes')">
+                            <h3>🏋️ Групповые занятия</h3>
+                            <p>Управление расписанием групповых тренировок</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('users')">
+                            <h3>👥 Управление пользователями</h3>
+                            <p>Управление клиентами и их данными</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('settings')">
+                            <h3>⚙️ Настройки системы</h3>
+                            <p>Общие настройки FitnessHub</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('subscriptions')">
+                            <h3>🎫 Управление абонементами</h3>
+                            <p>Создание и управление абонементами</p>
+                        </div>
+                        <div class="card feature-card" onclick="showSection('trainer-schedule')">
+                            <h3>📅 Расписание тренеров</h3>
+                            <p>Управление индивидуальными тренировками</p>
+                        </div>
+                        <div class="card feature-card" onclick="viewAnalytics()">
+                            <h3>📈 Аналитика</h3>
+                            <p>Детальная аналитика работы клуба</p>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Быстрая статистика</h2>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <h3>Всего клиентов</h3>
+                                <p class="stat-number" id="totalClients">0</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>Активных тренеров</h3>
+                                <p class="stat-number" id="activeTrainers">0</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>Занятий сегодня</h3>
+                                <p class="stat-number" id="todaySessions">0</p>
+                            </div>
+                            <div class="stat-item">
+                                <h3>Доход за месяц</h3>
+                                <p class="stat-number" id="monthlyRevenue">0 ₽</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h2>Последние действия</h2>
+                        <div id="recentActivities">
+                            <p>Нет recent activities</p>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="trainers-section" class="section">
+                    <div class="section-header">
+                        <h2>Управление тренерами</h2>
+                        <button class="btn btn-primary" onclick="adminManager.openCreateTrainerModal()">Добавить тренера</button>
+                    </div>
+                    <div id="admin-trainers-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="users-section" class="section">
+                    <div class="section-header">
+                        <h2>Управление клиентами</h2>
+                        <button class="btn btn-outline" onclick="adminManager.loadUsers()">
+                            <i class="fas fa-sync-alt"></i> Обновить
+                        </button>
+                    </div>
+
+                    <div class="stats-grid" style="margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="newClientsThisMonth">0</h3>
+                                <p>Новых за месяц</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-users-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="group-classes-section" class="section">
+                    <div class="section-header">
+                        <h2>Управление групповыми занятиями</h2>
+                        <button class="btn btn-primary" onclick="adminManager.openCreateSessionModal()">Добавить занятие</button>
+                    </div>
+                    <div id="admin-sessions-list" class="catalog-grid"></div>
+                </section>
+
+                <section id="trainer-schedule-section" class="section">
+                    <div class="section-header">
+                        <h2>Управление расписанием тренеров</h2>
+                        <button class="btn btn-primary" onclick="adminScheduleManager.openCreateScheduleModal()">Добавить расписание</button>
+                    </div>
+                    <div id="admin-trainer-schedule"></div>
+                </section>
+
+                <section id="subscriptions-section" class="section">
+                    <div class="section-header">
+                        <h2>Управление абонементами</h2>
+                        <button class="btn btn-primary" onclick="adminSubscriptionsManager.openCreateSubscriptionModal()">
+                            <i class="fas fa-plus"></i> Добавить абонемент
+                        </button>
+                    </div>
+
+                    <div class="stats-grid" style="margin-bottom: 20px;">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-ticket-alt"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="totalSubscriptions">0</h3>
+                                <p>Всего абонементов</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3 id="activeSubscriptions">0</h3>
+                                <p>Активных абонементов</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="admin-subscriptions-list" class="catalog-grid">
+                        <div class="loading">Загрузка абонементов...</div>
+                    </div>
+                </section>
+
+                <section id="reports-section" class="section">
+                    <h2>Отчеты и аналитика</h2>
+                    <div class="card">
+                        <p>Финансовые и статистические отчеты</p>
+                    </div>
+                </section>
+
+                <section id="settings-section" class="section">
+                    <h2>Настройки профиля</h2>
+                    
+                    <div class="card">
+                        <div class="card-content">
+                            <h3>Личные данные</h3>
+                            <form id="admin-profile-form">
+                                <div class="form-group">
+                                    <label>Имя:</label>
+                                    <input type="text" id="admin-profile-name" name="name" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Email:</label>
+                                    <input type="email" id="admin-profile-email" name="email" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Телефон:</label>
+                                    <input type="tel" id="admin-profile-phone" name="phone" placeholder="+7 (XXX) XXX-XX-XX">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Новый пароль:</label>
+                                    <input type="password" id="admin-profile-password" name="password" placeholder="Новый пароль">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Подтвердите пароль:</label>
+                                    <input type="password" id="admin-profile-confirm-password" name="confirm_password" placeholder="Подтвердите пароль">
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i> Сохранить изменения
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-content">
+                            <h3>Информация о системе</h3>
+                            <div class="system-info">
+                                <div class="detail-item">
+                                    <i class="fas fa-user-shield"></i>
+                                    <span>Роль: <strong>Администратор</strong></span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Дата регистрации: <strong id="admin-registration-date"></strong></span>
+                                </div>
+                                <div class="detail-item">
+                                    <i class="fas fa-database"></i>
+                                    <span>ID пользователя: <strong id="admin-user-id"></strong></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <div class="container">
+                <p>&copy; 2025 Pulse. Все права защищены.</p>
+            </div>
+        </footer>
+    </div>
+
+    <div id="delete-confirm-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeModals()">&times;</span>
+            <h2>Подтверждение удаления</h2>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить тренера <strong id="delete-trainer-name"></strong>?</p>
+                <p class="text-warning">Это действие нельзя отменить!</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="adminManager.closeModals()">Отмена</button>
+                <button class="btn btn-danger" id="confirm-delete-btn">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="create-session-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeModals()">&times;</span>
+            <h2 id="session-modal-title">Добавить групповое занятие</h2>
+            <form id="session-form">
+                <input type="text" name="name" placeholder="Название занятия" required>
+                <textarea name="description" placeholder="Описание занятия" rows="3" required></textarea>
+                
+                <div class="form-group">
+                    <label>Дни недели:</label>
+                    <div class="days-checkbox">
+                        <label><input type="checkbox" name="days" value="monday"> Понедельник</label>
+                        <label><input type="checkbox" name="days" value="tuesday"> Вторник</label>
+                        <label><input type="checkbox" name="days" value="wednesday"> Среда</label>
+                        <label><input type="checkbox" name="days" value="thursday"> Четверг</label>
+                        <label><input type="checkbox" name="days" value="friday"> Пятница</label>
+                        <label><input type="checkbox" name="days" value="saturday"> Суббота</label>
+                        <label><input type="checkbox" name="days" value="sunday"> Воскресенье</label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="session-trainer-select">Тренер:</label>
+                    <select id="session-trainer-select" name="trainer_id" class="form-select">
+                        <option value="">Загрузка тренеров...</option>
+                    </select>
+                </div>
+
+                <input type="time" name="time" required>
+                <input type="number" name="max_participants" placeholder="Макс. участников" min="1" required>
+                <input type="number" name="duration" placeholder="Длительность (минут)" min="30" step="15" required>
+
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="is_active" checked>
+                        Активное занятие
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="create-subscription-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminSubscriptionsManager.closeModals()">&times;</span>
+            <h2 id="subscription-modal-title">Добавить абонемент</h2>
+            <form id="subscription-form">
+                <input type="text" name="name" placeholder="Название абонемента" required>
+                <select name="type" required>
+                    <option value="">Выберите тип</option>
+                    <option value="group">Групповые тренировки</option>
+                    <option value="gym">Посещение зала</option>
+                    <option value="combo">Все включено</option>
+                </select>
+                <textarea name="description" placeholder="Описание абонемента" rows="3" required></textarea>
+                <input type="number" name="price" placeholder="Цена" min="0" step="100" required>
+                <input type="number" name="visits_count" placeholder="Количество посещений" min="1" required>
+                <input type="number" name="duration_days" placeholder="Срок действия (дней)" min="1" required>
+                
+                <div class="form-group">
+                    <label style="display: flex; align-items: center; gap: 8px;">
+                        <input type="checkbox" name="is_active" checked>
+                        Активный абонемент
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="delete-subscription-confirm-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminSubscriptionsManager.closeModals()">&times;</span>
+            <h2>Подтверждение удаления</h2>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить абонемент <strong id="delete-subscription-name"></strong>?</p>
+                <p class="text-warning">Это действие нельзя отменить!</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="adminSubscriptionsManager.closeModals()">Отмена</button>
+                <button class="btn btn-danger" id="confirm-subscription-delete-btn">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-session-confirm-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeModals()">&times;</span>
+            <h2>Подтверждение удаления</h2>
+            <div class="modal-body">
+                <p>Вы уверены, что хотите удалить занятие <strong id="delete-session-name"></strong>?</p>
+                <p class="text-warning">Это действие нельзя отменить!</p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-outline" onclick="adminManager.closeModals()">Отмена</button>
+                <button class="btn btn-danger" id="confirm-session-delete-btn">Удалить</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="create-trainer-schedule-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminScheduleManager.closeModals()">&times;</span>
+            <h2 id="schedule-modal-title">Добавить расписание тренера</h2>
+            <form id="trainer-schedule-form">
+                <input type="hidden" name="mode" value="create">
+                <input type="hidden" name="slot_id" value="">
+                
+                <div class="form-group">
+                    <label for="schedule-trainer-select">Тренер:</label>
+                    <select id="schedule-trainer-select" name="trainer_id" class="form-select" required>
+                        <option value="">Загрузка тренеров...</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="day-of-week">День недели:</label>
+                    <select id="day-of-week" name="day_of_week" required>
+                        <option value="">Выберите день</option>
+                        <option value="monday">Понедельник</option>
+                        <option value="tuesday">Вторник</option>
+                        <option value="wednesday">Среда</option>
+                        <option value="thursday">Четверг</option>
+                        <option value="friday">Пятница</option>
+                        <option value="saturday">Суббота</option>
+                        <option value="sunday">Воскресенье</option>
+                    </select>
+                </div>
+
+                <input type="hidden" name="slot_type" value="personal">
+
+                <div class="form-group">
+                    <label for="schedule-start-time">Время начала:</label>
+                    <input type="time" id="schedule-start-time" name="start_time" required>
+                </div>
+                <div class="form-group">
+                    <label for="schedule-end-time">Время окончания:</label>
+                    <input type="time" id="schedule-end-time" name="end_time" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="max-slots">Максимум участников:</label>
+                    <input type="number" id="max-slots" name="max_slots" value="1" min="1" max="10" required>
+                </div>
+
+                <div class="form-info">
+                    <p><strong>Требования:</strong></p>
+                    <ul>
+                        <li>✅ Только индивидуальные тренировки</li>
+                        <li>✅ Не менее 3 дней в неделю</li>
+                        <li>✅ Не менее 5 часов в день</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Сохранить расписание</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="create-trainer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="adminManager.closeModals()">&times;</span>
+            <h2 id="trainer-modal-title">Добавить тренера</h2>
+            <form id="trainer-form">
+                <input type="text" name="name" placeholder="Имя тренера" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <div id="password-field">
+                    <input type="password" name="password" placeholder="Пароль">
+                </div>
+                <input type="tel" name="phone" placeholder="Телефон">
+                <select name="experience">
+                    <option value="">Выберите опыт</option>
+                    <option value="1-3">1-3 года</option>
+                    <option value="3-5">3-5 лет</option>
+                    <option value="5+">Более 5 лет</option>
+                </select>
+                <input type="text" name="specialization" placeholder="Специализация">
+                <textarea name="bio" placeholder="О тренере" rows="3"></textarea>
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/admin.js"></script>
+    <script src="js/admin-schedule.js"></script>
+    <script src="js/admin-subscriptions.js"></script>
+    <script src="js/admin-settings.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const user = Auth.getCurrentUser();
+            if (!user) {
+                alert('Для доступа к панели администратора необходимо авторизоваться');
+                window.location.href = './index.html';
+                return;
+            }
+            
+            if (user.role !== 'admin') {
+                alert('Доступ запрещен! У вас нет прав администратора');
+                window.location.href = './index.html';
+                return;
+            }
+            
+            const userNameElement = document.getElementById('userName');
+            if (userNameElement && user) {
+                userNameElement.textContent = user.name;
+            }
+
+            initNavigation();
+            
+            if (typeof adminManager !== 'undefined') {
+                adminManager.init();
+                adminManager.loadUsers();
+            }
+
+            if (typeof adminSettingsManager !== 'undefined') {
+                adminSettingsManager.init();
+            }
+            
+            if (typeof adminSubscriptionsManager !== 'undefined') {
+                adminSubscriptionsManager.init();
+            }
+
+            if (typeof adminScheduleManager !== 'undefined') {
+                adminScheduleManager.loadTrainers();
+            }
+        });
+
+        function initNavigation() {
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = e.target.getAttribute('data-section');
+                    showSection(section);
+                    
+                    document.querySelectorAll('.nav-link').forEach(item => item.classList.remove('active'));
+                    e.target.classList.add('active');
+                    
+                    if (section === 'trainers' && typeof adminManager !== 'undefined') {
+                        adminManager.loadTrainers();
+                    }
+                    if (section === 'users' && typeof adminManager !== 'undefined') {
+                        adminManager.loadUsers();
+                    }
+                    if (section === 'group-classes' && typeof adminManager !== 'undefined') {
+                        adminManager.loadGroupSessions();
+                        adminManager.loadTrainers();
+                    }
+                    if (section === 'trainer-schedule' && typeof adminScheduleManager !== 'undefined') {
+                        adminScheduleManager.init();
+                    }
+                    if (section === 'subscriptions' && typeof adminSubscriptionsManager !== 'undefined') {
+                        adminSubscriptionsManager.loadSubscriptions();
+                    }
+                    if (section === 'settings' && typeof adminSettingsManager !== 'undefined') {
+                        adminSettingsManager.loadAdminProfile();
+                    }
+                });
+            });
+        }
+
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            const activeSection = document.getElementById(`${sectionName}-section`);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+        }
+
+        function viewAnalytics() {
+            alert('Просмотр аналитики');
+        }
+
+        setTimeout(() => showSection('dashboard'), 100);
+    </script>
+</body>
+</html>
